@@ -1,0 +1,346 @@
+DRIVER PULSE — DATA EXPLORATION NOTES
+======================================
+Explored: 2026-03-04
+Dataset date: 2024-02-06 (single day snapshot)
+
+════════════════════════════════════════════════════════════════
+FILE INVENTORY
+════════════════════════════════════════════════════════════════
+
+  drivers/drivers.csv              210 rows
+  trips/trips.csv                  220 rows
+  sensor_data/accelerometer_data.csv  243 rows
+  sensor_data/audio_intensity_data.csv 248 rows
+  earnings/driver_goals.csv        210 rows
+  earnings/earnings_velocity_log.csv  221 rows
+  processed_outputs/flagged_moments.csv   208 rows  [reference output]
+  processed_outputs/trip_summaries.csv    220 rows  [reference output]
+
+
+════════════════════════════════════════════════════════════════
+1. DRIVERS  (210 rows)
+════════════════════════════════════════════════════════════════
+
+Columns: driver_id, name, city, shift_preference, avg_hours_per_day,
+         avg_earnings_per_hour, experience_months, rating
+
+City distribution:
+  Bangalore: 30, Hyderabad: 30, Delhi: 28, Pune: 28, Kolkata: 26,
+  Mumbai: 23, Ahmedabad: 23, Chennai: 22
+
+Shift preferences (roughly equal split):
+  full_day: 54, afternoon: 54, evening: 52, morning: 50
+
+Ratings:       min=4.4  max=5.0  avg=4.70   → narrow, high range (no bad actors)
+Experience:    min=8mo  max=48mo avg=28.1mo
+Avg earn/hr:   min=170  max=205  avg=187.3 INR
+
+Notes:
+  - All driver_ids in other files join cleanly (no orphan IDs).
+  - Rating range is very narrow (4.4–5.0) — not a useful discriminator on its own.
+
+
+════════════════════════════════════════════════════════════════
+2. TRIPS  (220 rows)
+════════════════════════════════════════════════════════════════
+
+Columns: trip_id, driver_id, date, start_time, end_time, duration_min,
+         distance_km, fare, surge_multiplier, pickup_location,
+         dropoff_location, trip_status
+
+All 220 trips are "completed" on 2024-02-06.
+
+Surge multipliers present: 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6
+  (1.5 is most common with 43 trips; only 22 trips at base 1.0x)
+
+Fare:      min=142  max=468  avg=292 INR
+Duration:  min=18   max=38   avg=28.4 min
+Distance:  min=8.0  max=22.5 avg=13.6 km
+
+Time spread: 06:xx through 19:xx (peak 06–10 morning, drops off after 17:xx)
+
+Unique drivers represented: 130/210 (61%)
+Trips per driver: min=1, max=5
+
+Notes:
+  - No cancelled or incomplete trips — clean operational data.
+  - Surge pricing is the norm, not the exception; most trips have surge.
+  - Top pickup hubs: Dwarka, Indiranagar, Secunderabad, Worli, CP
+  - Top dropoff hubs: Koramangala, Hinjewadi, Powai, South Delhi, Hitec City
+    → Cross-city patterns (e.g., Indiranagar→Koramangala in Bangalore)
+
+
+════════════════════════════════════════════════════════════════
+3. ACCELEROMETER  (243 rows across 30 trips)
+════════════════════════════════════════════════════════════════
+
+Columns: sensor_id, trip_id, timestamp, elapsed_seconds,
+         accel_x, accel_y, accel_z, speed_kmh, gps_lat, gps_lon
+
+CRITICAL: Only 30 of 220 trips (14%) have sensor data.
+          Accel and audio cover the exact same 30 trips.
+
+Readings per trip: min=4, max=21 (sparse — not continuous 50Hz telemetry)
+Sampling interval: ~30 seconds based on elapsed_seconds gaps
+
+Speed range: 0–62 km/h, avg=29 km/h
+accel_x (lateral):    0.10–6.80, avg=1.59
+accel_y (longitudinal): 0.10–5.40, avg=1.06
+accel_z (vertical):   4.80–9.80, avg=9.10  (gravity ~9.8 m/s²)
+
+Δ-accel magnitude (sqrt(x²+y²+(z-9.8)²)) — gravity-removed:
+  0–2 m/s²  : 115 readings  (normal driving)
+  2–4 m/s²  : 120 readings  (moderate events)
+  4–6 m/s²  : 3  readings   ← potential harsh events
+  6–8 m/s²  : 2  readings   ← harsh events
+  8+ m/s²   : 3  readings   ← very harsh / crash-level
+
+Threshold recommendations:
+  moderate_brake  : 2–4 m/s²
+  harsh_braking   : > 4 m/s²  (8 readings = 3.3% of all readings)
+  extreme event   : > 6 m/s²  (5 readings = 2.1%)
+
+Note: accel_z min is 4.8 (phone tilted / not flat on dashboard).
+      z-axis alone unreliable; use full magnitude.
+
+
+════════════════════════════════════════════════════════════════
+4. AUDIO INTENSITY  (248 rows across 30 trips)
+════════════════════════════════════════════════════════════════
+
+Columns: audio_id, trip_id, timestamp, elapsed_seconds,
+         audio_level_db, audio_classification, sustained_duration_sec
+
+Same 30 trips as accelerometer.
+
+dB range: 50–98, avg=74.5
+
+Classifications and counts:
+  quiet:        31   (50–59 dB typically)
+  normal:       47   (conversational background)
+  conversation: 49   (active talk, not alarming)
+  loud:         44   (elevated, watch)
+  very_loud:    36   (concerning — all have sustained_duration > 0)
+  argument:     41   (highest alarm — all have sustained_duration > 0)
+
+Sustained duration (seconds) by class:
+  quiet:        0 (never sustained — reassuring)
+  normal:       0
+  conversation: 0
+  loud:         0
+  very_loud:    avg=78s, range non-zero
+  argument:     avg=101s, range non-zero
+
+KEY INSIGHT: sustained_duration_sec is ONLY non-zero for "very_loud" and
+             "argument" classifications. This is a clean binary signal:
+             if sustained_duration > 0 → the classification is high-concern.
+             Use: (classification IN {very_loud, argument}) OR (db > ~82 dB)
+             as the audio alert threshold.
+
+
+════════════════════════════════════════════════════════════════
+5. DRIVER GOALS  (210 rows — one per driver)
+════════════════════════════════════════════════════════════════
+
+Columns: goal_id, driver_id, date, shift_start_time, shift_end_time,
+         target_earnings, target_hours, current_earnings, current_hours,
+         status, earnings_velocity, goal_completion_forecast
+
+One goal row per driver (matches driver count exactly).
+
+Status breakdown:
+  achieved:    71 (34%)
+  at_risk:     72 (34%)
+  in_progress: 67 (32%)
+
+Forecast breakdown:
+  on_track: 76 (36%)
+  at_risk:  64 (30%)
+  ahead:    70 (33%)
+
+Status × Forecast cross-tab (interesting mismatches):
+  achieved    → on_track:30, at_risk:22, ahead:19
+  at_risk     → on_track:20, at_risk:23, ahead:29  ← 29 "at_risk" but "ahead"?
+  in_progress → on_track:26, at_risk:19, ahead:22
+
+  NOTE: Mismatch between status and forecast is expected — "status" reflects
+  the end-of-day outcome, "forecast" is a mid-shift prediction. The mismatches
+  reveal where the forecast system succeeded or failed.
+
+Target earnings: min=1100, max=1800, avg=1426 INR/day
+Target hours:    min=6h,   max=10h,  avg=8h
+
+Shift windows: 06:00–14:30 (morning), 17:00–23:00 (evening), etc.
+
+
+════════════════════════════════════════════════════════════════
+6. EARNINGS VELOCITY LOG  (221 rows)
+════════════════════════════════════════════════════════════════
+
+Columns: log_id, driver_id, date, timestamp, cumulative_earnings,
+         elapsed_hours, current_velocity, target_velocity, velocity_delta,
+         trips_completed, forecast_status
+
+221 checkpoints covering multiple drivers. Not 1-per-driver — these are
+real-time snapshots logged after each trip completion.
+
+Forecast status: ahead=157, at_risk=57, on_track=7
+  → Most drivers are running ahead of target velocity in this snapshot.
+
+Cumulative earnings at checkpoint: min=145, max=2500, avg=1211 INR
+Current velocity: min=26.2, max=3568.5 INR/hr (outliers present!)
+  avg=450.8 — much higher than driver baseline of ~187 INR/hr because
+  early trips (1-2 trips) inflate hourly rate on short elapsed time.
+
+Velocity delta (current - target):
+  < -50    : 42 checkpoints  (falling behind)
+  -50 to 0 : 22 checkpoints  (slightly behind)
+  0 – 100  : 50 checkpoints  (slightly ahead)
+  100–300  : 46 checkpoints  (comfortably ahead)
+  300+     : 61 checkpoints  (well ahead — likely early-shift inflation)
+
+Trips completed at checkpoint: min=1, max=15
+
+DESIGN NOTE: velocity is noisy early in shift (high after first trip).
+Use a rolling window or minimum-trips threshold (e.g., ≥3 trips) before
+showing meaningful velocity to driver.
+
+
+════════════════════════════════════════════════════════════════
+7. FLAGGED MOMENTS  (208 rows — REFERENCE OUTPUT, do not ingest)
+════════════════════════════════════════════════════════════════
+
+Columns: flag_id, trip_id, driver_id, timestamp, elapsed_seconds,
+         flag_type, severity, motion_score, audio_score, combined_score,
+         explanation, context
+
+138 unique trips flagged (out of 220 trips = 63%).
+Flags per trip: min=1, max=5.
+
+Flag types:
+  harsh_braking:    51 (most common)
+  moderate_brake:   46
+  conflict_moment:  43
+  sustained_stress: 35
+  audio_spike:      33
+
+Severity distribution:
+  low:    70
+  medium: 68
+  high:   70   ← roughly even 3-way split
+
+Flag type × severity:
+  audio_spike:      low=9,  med=11, high=13  (skews high)
+  conflict_moment:  low=19, med=10, high=14
+  harsh_braking:    low=19, med=20, high=12  (skews low-med)
+  moderate_brake:   low=14, med=14, high=18
+  sustained_stress: low=9,  med=13, high=13  (skews high)
+
+Scores: motion_score 0.31–0.95, audio_score 0.18–0.96,
+        combined_score 0.27–0.94
+        All scores avg ~0.6
+
+Severity mapping (inferred from combined_score):
+  low:    ~0.27–0.50
+  medium: ~0.50–0.70
+  high:   ~0.70–0.94
+
+Explanation field contains human-readable text with raw values, e.g.:
+  "Sudden deceleration detected (6.2 m/s² spike). Traffic stop."
+  "Combined signal: Harsh braking (6.2 m/s²) + sustained high audio (95 dB)"
+
+Context field: pipe-delimited, e.g. "Motion: harsh_brake | Audio: argument"
+
+
+════════════════════════════════════════════════════════════════
+8. TRIP SUMMARIES  (220 rows — REFERENCE OUTPUT, do not ingest)
+════════════════════════════════════════════════════════════════
+
+Columns: trip_id, driver_id, date, duration_min, distance_km, fare,
+         earnings_velocity, motion_events_count, audio_events_count,
+         flagged_moments_count, max_severity, stress_score,
+         trip_quality_rating
+
+220 rows — one per trip.
+
+Quality ratings:
+  excellent: 71 (32%)
+  good:      52 (24%)
+  fair:      47 (21%)
+  poor:      50 (23%)
+
+Max severity: none=62, low=59, medium=52, high=47
+
+159/220 trips (72%) have at least one flagged moment.
+Flagged moments per trip: min=0, max=4
+
+Stress score: min=0.05, max=0.94, avg=0.47
+
+Quality vs stress score (avg):
+  excellent: 0.43   poor: 0.44   good: 0.47   fair: 0.55
+  NOTE: Quality does NOT cleanly separate by stress score alone.
+  Other factors (fare, earnings velocity) likely influence quality rating.
+
+Earnings velocity in summaries: min=227, max=1540, avg=707 INR/hr
+  (per-trip velocity = fare / duration_in_hours)
+  This is much higher than shift-level velocity (~187 INR/hr) because
+  it doesn't account for idle/waiting time between trips.
+
+
+════════════════════════════════════════════════════════════════
+KEY DESIGN DECISIONS & OPEN QUESTIONS
+════════════════════════════════════════════════════════════════
+
+1. SENSOR SPARSITY (most important constraint)
+   Only 30/220 trips (14%) have sensor data. The system must handle
+   trips without sensor data gracefully — no flags, show "no data" state.
+   Do NOT generate flags for trips without sensor readings.
+
+2. ACCEL THRESHOLD
+   Use Δ-accel magnitude (gravity-removed):
+     moderate_brake  : 2.0–4.0 m/s²
+     harsh_braking   : > 4.0 m/s²
+   Consider: rolling window of 2+ consecutive readings above threshold
+   to reduce single-sample noise.
+
+3. AUDIO THRESHOLD
+   classification ∈ {very_loud, argument} → always flag
+   sustained_duration > 60s              → escalate severity
+   dB > 82 as a numeric fallback if classification unavailable
+
+4. COMBINED SCORE FORMULA (from reference output)
+   combined_score ≈ weighted avg of motion_score and audio_score
+   Suggested: combined = 0.6 * motion_score + 0.4 * audio_score
+   (motion slightly weighted higher; tune based on reference outputs)
+   Severity: low < 0.50, medium 0.50–0.70, high > 0.70
+
+5. EARNINGS VELOCITY UX
+   Early-shift velocity is inflated. Show forecast only after ≥3 trips
+   or ≥1 hour elapsed. Use smoothed rolling velocity rather than
+   instantaneous.
+
+6. GOAL STATUS vs FORECAST MISMATCH
+   29 drivers have "at_risk" status but "ahead" forecast — these are
+   good candidates to highlight as "you turned it around" moments.
+   Conversely, drivers who were "on_track" but ended "at_risk" show
+   where the forecast failed.
+
+7. TRIP QUALITY RATING LOGIC
+   Quality doesn't purely track stress score. Likely a composite of:
+     - stress_score (lower = better)
+     - earnings_velocity (higher = better)
+     - flagged_moments_count (lower = better)
+   Suggested rule:
+     excellent: stress < 0.3  AND no high-severity flags
+     good:      stress < 0.5  OR  no high-severity flags
+     fair:      stress 0.5–0.7
+     poor:      stress > 0.7  OR  high-severity flag present
+
+8. DATA JOIN KEYS
+   trips ←→ accelerometer/audio: via trip_id
+   trips ←→ drivers: via driver_id
+   drivers ←→ driver_goals: via driver_id
+   drivers ←→ earnings_velocity_log: via driver_id
+   trips ←→ flagged_moments: via trip_id
+   trips ←→ trip_summaries: via trip_id
+   All joins are clean (no orphan IDs found).
