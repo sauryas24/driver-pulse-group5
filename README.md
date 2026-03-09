@@ -47,7 +47,8 @@ driver-pulse-group5/
 │   ├── motion_detector.py         # Detects harsh driving events per trip
 │   ├── signal_combiner.py         # Time-window join + Isolation Forest training/inference
 │   ├── tag_anomaly_scores.py      # Scales anomaly score → 0–10 + driver guidance tags
-│   └── earnings_engine.py         # Earnings velocity and goal forecasting
+│   ├── earnings_engine.py         # Earnings velocity and goal forecasting
+│   └── driver_pulse_score.py      # Composite Driver Pulse Score (0–100) per trip
 │
 ├── preprocessing/
 │   ├── exploration_notes.txt      # Full data exploration findings
@@ -65,6 +66,7 @@ driver-pulse-group5/
     │   └── motion_flags_expanded.csv   # Expanded dataset using Kaggle "Driver Behaviour Analysis Using Sensor" dataset
     │                                       # (https://www.kaggle.com/datasets/eishkaran/driver-behaviour-analysis-using-sensor)
     │                                       # Features used: manuever_acceleration, acc_dir_change
+    ├── driver_pulse_scores.csv     # Composite Driver Pulse Score per trip (0–100)
     └── combined/
         ├── combined_windows.csv        # Time-window joined feature table (all 50 trips)
         ├── anomaly_scores.csv          # Isolation Forest scores on held-out test set
@@ -146,6 +148,12 @@ python3 src/tag_anomaly_scores.py
 python3 src/earnings_engine.py
 ```
 
+### 7. Driver Pulse Score
+```bash
+python3 src/driver_pulse_score.py
+# Output: outputs/driver_pulse_scores.csv
+```
+
 ---
 
 ## Output Files
@@ -175,108 +183,57 @@ python3 src/earnings_engine.py
 
 ---
 
-## System Architecture
+### `driver_pulse_scores.csv` — per-trip composite score
 
-```
-Phone sensors (on-device)
-    │
-    ├── Accelerometer (accel_x/y/z, speed)
-    │       ↓
-    │   motion_detector.py
-    │   • gravity-removed magnitude
-    │   • manuever_acceleration (|Δmagnitude|)
-    │   • acc_dir_change (angular shift between readings)
-    │   • events flagged if magnitude > 2 m/s²
-    │
-    └── Microphone (aggregated dB only — no raw audio)
-            ↓
-        audio_detector.py
-        • sustained_duration_sec > 0  OR  dB > 82 → high episode
-        • episode score = peak_sustained / 180s
+| Column | Description |
+|---|---|
+| `trip_id` | Trip identifier |
+| `driver_id` | Driver identifier |
+| `motion_deduction` | Total points deducted for motion events (≤ 0) |
+| `audio_deduction` | Total points deducted for audio events (≤ 0) |
+| `earnings_adj` | Points added or removed based on earnings velocity |
+| `forecast_status` | Driver's earnings pace: `ahead`, `on_track`, or `at_risk` |
+| `pulse_score` | Final Driver Pulse Score (0–100) |
+| `status` | Interpretation label |
+| `motion_events` | Plain-English summary of motion events detected |
+| `audio_events` | Plain-English summary of audio events detected |
 
-            │                    │
-            └──────── join ───────┘
-                  signal_combiner.py
-                  • time-window join: ±30s
-                  • 4 features: manuever_acceleration,
-                    acc_dir_change, peak_db, peak_sustained_sec
-                  • Isolation Forest (unsupervised)
-                        │
-                        ↓
-                  anomaly_score (0–1)
-                        │
-                  tag_anomaly_scores.py
-                        │
-                        ↓
-              risk_score (0–10) + driver_guidance
-                        │
-                   Driver app UI
-```
+### Driver Pulse Score — how it is calculated
 
-**Edge vs cloud:** All detection logic runs on-device (Python scripts deployable as a lightweight inference service). The saved `isolation_forest.pkl` is ~50 KB. Raw audio never leaves the device.
+Every trip starts at **100** and adjustments are applied in three steps:
 
----
+**Step 1 — Motion penalties** (accelerometer events)
 
-## Algorithmic Decisions
+| Event | Penalty |
+|---|---|
+| `harsh_braking` | −5 |
+| `moderate_brake` | −3 |
 
-### Why Isolation Forest, not a supervised classifier?
+**Step 2 — Audio penalties** (cabin noise events)
 
-We have no real labelled ground truth — the reference `flagged_moments.csv` is itself a synthetic output. Training a supervised model on self-generated labels would produce a model that learns our own rules back, adding no value. Isolation Forest finds statistical outliers in the combined motion + audio feature space without requiring labels.
+| Classification | Penalty |
+|---|---|
+| `argument` | −4 |
+| `very_loud` | −2 |
+| `loud` | −1 |
 
-### Why these four features?
+**Step 3 — Earnings velocity adjustment**
 
-`manuever_acceleration` and `acc_dir_change` capture *directional* changes in force, not just magnitude — a phone lying flat on a seat registers high z-axis during a pothole but low `acc_dir_change`, while genuine sharp braking shifts both. `peak_db` and `peak_sustained_sec` separately capture how loud and how long the cabin noise was elevated, since a brief spike (door slam) and a sustained argument have different implications.
+| Forecast status | Adjustment |
+|---|---|
+| `ahead` | +5 |
+| `on_track` | 0 |
+| `at_risk` | −5 |
 
-### Why a 30-second join window?
+Score is clamped to [0, 100].
 
-The sensor sampling interval is approximately 30 seconds. A 30-second join window ensures that motion and audio readings from the same physical event are paired, while readings from clearly separate moments (e.g. a bump at t=300s and a loud passenger at t=600s) are not incorrectly combined.
+**Interpretation scale**
 
-### Why not LSTM / deep learning?
-
-Sampling intervals are 30 seconds and irregular. There is insufficient sequential density for a recurrent model to extract meaningful temporal patterns. Random Forest and Isolation Forest on tabular features are the appropriate tools for this data density.
+| pulse_score | status |
+|---|---|
+| 90–100 | Excellent |
+| 75–89 | Good |
+| 60–74 | Moderate risk |
+| < 60 | High risk |
 
 ---
-
-## Trade-offs — Critical Analysis
-
-### 1. Sensor coverage is too sparse to be reliable
-
-Only 30 of 220 trips (14%) have sensor data. The model trains on expanded synthetic data calibrated to real-world distributions, but the expansion is not a substitute for actual trip recordings. Every statistical claim about "normal driving" is based on synthesised data, not observed driver behaviour. A production system would require months of real trip data before the Isolation Forest's notion of "normal" is trustworthy.
-
-### 2. The expanded datasets are not aligned by design
-
-The audio expansion (`generate_audio_data.py`) was generated independently from the motion expansion. They share trip IDs but their timestamps are not derived from the same underlying trip. The 30-second join window pairs readings that happen to fall within a time band, not readings from the same physical second. This means a `combined` window (both sensors matched) does not necessarily represent a moment where both signals were simultaneously elevated — it represents two readings that occurred within 30 seconds of each other on the same trip.
-
-### 3. MELAUDIS calibration is an outdoor-to-indoor approximation
-
-The [MELAUDIS dataset](https://figshare.com/articles/dataset/_b_MELAUDIS_The_First_Acoustic_ITS_Dataset_in_Urban_Environment_b_/27115870) consists of outdoor traffic recordings (cars, trams, motorcycles passing a roadside microphone). We apply a 20 dB cabin attenuation estimate to derive in-cabin baselines. This is a common acoustic engineering approximation but it is not measured for rideshare vehicles specifically. Different car models, window positions, and road surfaces produce different attenuation profiles. The synthetic dB distributions carry this uncertainty.
-
-### 4. Isolation Forest contamination is hand-tuned
-
-The `contamination=0.10` parameter was set manually, implying we expect 10% of windows to be anomalous. This was chosen to roughly match the proportion of flagged moments in the reference output, not from any principled study of how often rideshare trips contain stress events. Setting it higher increases recall but produces more false positives; lower reduces false positives but misses genuine events.
-
-### 5. Anomaly score normalisation is batch-relative
-
-We normalise raw Isolation Forest scores to 0–1 by subtracting the batch minimum and dividing by the batch range. This means the same physical event scores differently depending on what other events are in the inference batch. A high-stress event in a mostly-calm batch scores higher than the same event in a batch containing multiple high-stress trips. For a driver-facing bar, the absolute number could therefore be misleading.
-
-### 6. Precision is 0.06 and recall is 0.03
-
-The model as evaluated is not reliable as a binary classifier. This is partly a threshold problem (lowering the anomaly score cutoff from 0.40 to 0.25 would catch more low-severity GT flags) and partly a data problem (the test set contains only 10 GT flags across 10 trips — too few to draw strong conclusions). The decision to display the raw risk score as a continuous bar rather than a binary flag is a direct response to this limitation: we surface the signal without making a hard claim about whether something dangerous occurred.
-
-### 7. NaN imputation introduces bias
-
-Windows with only one sensor present (motion-only or audio-only) have the missing sensor's features replaced with the column median. This means a window with unusually high motion but no audio reading inherits a median audio value, which could push it above or below the anomaly threshold compared to what a true combined reading would produce. A better approach would be to train separate models for motion-only and audio-only windows, but this requires more data.
-
-### 8. The earnings velocity early-shift inflation is unhandled in the UI
-
-`current_velocity` is mathematically inflated for the first 1–2 trips because elapsed time is small. A driver who earned 300 INR in their first 20 minutes has a computed velocity of 900 INR/hr, which is not a reliable predictor of shift outcome. The earnings engine should suppress velocity display until at least 3 trips or 1 hour of driving have elapsed.
-
----
-
-## Privacy Constraints
-
-- **No raw audio is stored or transmitted.** The microphone pipeline processes only aggregated dB levels sampled at 30-second intervals.
-- **`sustained_duration_sec` is the only audio feature used in the model.** This is a measure of how long noise stayed elevated, not what was said or who was speaking.
-- **GPS coordinates** are present in the accelerometer data but are not used in any detection or scoring logic.
-- **Driver guidance language** is deliberately non-specific about what was detected — "elevated cabin noise" rather than "argument detected" — because the system cannot distinguish a passenger argument from loud music.
-- All inference runs locally. No sensor data needs to leave the device.
