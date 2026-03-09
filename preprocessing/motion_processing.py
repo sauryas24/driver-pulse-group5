@@ -55,6 +55,36 @@ df['cumulative_penalty'] = df.groupby('trip_id')['event_penalty'].cumsum()
 df['dynamic_trip_score'] = (1.0 - df['cumulative_penalty']).clip(lower=0.0, upper=1.0)
 
 
+#pre-processing expanded set
+
+
+#pre-processing
+import pandas as pd
+import numpy as np
+df = pd.read_csv('Accelerometer.csv')
+df = df.sort_values(['Milliseconds'])
+
+df['30s_bin'] = df['Milliseconds'] // 10000
+
+df = df.groupby(['30s_bin']).first().reset_index()
+df['dt'] = (df['Milliseconds'].diff() / 1000.0)
+df['dt'] = df['dt'].replace(0, 30.0).fillna(30.0)
+df['horizontal_acceleration'] = np.sqrt(df['X']**2 + df['Y']**2)
+df['accl_diff'] = df['horizontal_acceleration'].diff().abs()
+
+df['manuever_acceleration'] = (df['accl_diff'] / df['dt']).fillna(0)
+df['acc_dir']=(np.arctan2(df['Y'],df['X']))
+df['acc_dir_change']=df['acc_dir'].diff().abs()
+df['trip_id'] = 'TRIP049'
+
+final_df = df.drop(columns=['30s_bin', 'dt', 'accl_diff', 'horizontal_acceleration','acc_dir'])
+final_df.to_csv('Accelerometer.csv', index=False)
+
+data_1 = pd.read_csv('processed_data.csv')
+data_2 = pd.read_csv('Accelerometer.csv')
+combined_data = pd.concat([data_1, data_2], ignore_index=True)
+combined_data.to_csv('processed_data.csv', index=False)
+
 final_df=df.drop(columns=['dt','accl_diff','acc_dir','horizontal_acceleration','speed_ms','long_accel','event_penalty','cumulative_penalty'])
 final_df.to_csv('processed_data.csv',index=False)
 
