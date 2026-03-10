@@ -8,7 +8,7 @@ Driver Pulse gives rideshare drivers a clearer picture of two things that matter
 ## Live Demo & Video
 
 - **Deployment:** `[DEPLOYMENT LINK PLACEHOLDER]`
-- **Demo video:** `[DEMO VIDEO LINK PLACEHOLDER]`
+- **Demo video:** `https://drive.google.com/file/d/1CMngr83ZClM1fztDSvjUrKv15n53ZyPv/view?usp=sharing`
 
 ---
 
