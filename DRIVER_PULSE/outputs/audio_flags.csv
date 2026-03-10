@@ -1,0 +1,7 @@
+trip_id,timestamp,event_type,severity,audio_class,sustained_duration_sec
+trip_001,2025-03-07 10:06:15,audio_spike,medium,very_loud,5
+trip_001,2025-03-07 10:12:50,audio_spike,low,argument,3
+trip_002,2025-03-07 11:03:00,audio_spike,high,argument,8
+trip_003,2025-03-07 12:11:00,audio_spike,low,very_loud,2
+trip_004,2025-03-07 13:21:00,audio_spike,medium,very_loud,6
+driver_001_trip_001,2025-03-07 09:31:00,audio_spike,medium,very_loud,4

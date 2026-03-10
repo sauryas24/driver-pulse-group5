@@ -1,0 +1,2406 @@
+/* Driver Pulse - Uber-style Professional Dashboard */
+/* All theme colors from globals.css */
+
+/* Layout — scoped to .app-container so layout sidebar is unaffected */
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  background: var(--bg-main);
+}
+
+/* Legacy sidebar styles — only apply inside .app-container (unused when using layout) */
+.app-container .sidebar {
+  width: 260px;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--sidebar-border);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  height: 100vh;
+  z-index: 100;
+}
+
+.app-container .sidebar-header {
+  padding: var(--space-card);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-bottom: 1px solid var(--sidebar-border);
+}
+
+.app-container .sidebar-logo {
+  width: 44px;
+  height: 44px;
+  background: var(--sidebar-logo-bg);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.app-container .sidebar-logo svg {
+  width: 22px;
+  height: 22px;
+  color: var(--sidebar-text);
+}
+
+.app-container .sidebar-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--sidebar-text);
+}
+
+.app-container .sidebar-nav {
+  flex: 1;
+  padding: 20px 16px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  color: var(--sidebar-text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 4px;
+  font-weight: 500;
+  font-size: 15px;
+  text-decoration: none;
+}
+
+.nav-item:hover {
+  background: var(--sidebar-hover);
+  color: var(--sidebar-text);
+}
+
+.nav-item.active {
+  background: var(--sidebar-active);
+  color: var(--sidebar-text);
+  border-left: 3px solid var(--sidebar-text);
+  margin-left: -3px;
+  font-weight: 600;
+}
+
+.nav-item svg {
+  width: 20px;
+  height: 20px;
+}
+
+.app-container .sidebar-footer {
+  padding: var(--space-card);
+  border-top: 1px solid var(--sidebar-border);
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-avatar {
+  width: 42px;
+  height: 42px;
+  background: var(--sidebar-logo-bg);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--sidebar-text);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.user-info {
+  flex: 1;
+}
+
+.user-name {
+  font-weight: 600;
+  color: var(--sidebar-text);
+  font-size: 14px;
+}
+
+.user-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--status-ahead);
+  font-weight: 500;
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--status-ahead);
+  border-radius: 50%;
+}
+
+.app-container .main-content {
+  flex: 1;
+  margin-left: 260px;
+  min-height: 100vh;
+}
+
+/* Top Header */
+.top-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px var(--space-page);
+  background: transparent;
+}
+
+.page-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.time-display {
+  background: var(--bg-card);
+  padding: 10px 18px;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  border: 1px solid var(--border-card);
+  box-shadow: var(--shadow-sm);
+}
+
+.notification-btn {
+  width: 44px;
+  height: 44px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.notification-btn:hover {
+  background: var(--bg-main);
+  color: var(--text-primary);
+}
+
+/* Content Area */
+.content-area {
+  padding: 0 var(--space-page) var(--space-page);
+}
+
+/* Welcome Section */
+.welcome-section {
+  margin-bottom: var(--space-section);
+}
+
+.welcome-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.welcome-subtitle {
+  font-size: 15px;
+  color: var(--text-secondary);
+}
+
+/* Alerts */
+.alerts-container {
+  margin-bottom: var(--space-section);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.alert-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.alert-banner.alert-warning {
+  background: var(--status-on-track-bg);
+  color: #854D0E;
+  border-left: 4px solid var(--status-on-track);
+}
+
+.alert-banner.alert-risk {
+  background: var(--status-at-risk-bg);
+  color: #991B1B;
+  border-left: 4px solid var(--status-at-risk);
+}
+
+.alert-icon {
+  flex-shrink: 0;
+}
+
+.alert-message {
+  flex: 1;
+}
+
+.alert-banner.alert-clickable {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.alert-banner.alert-clickable:hover {
+  opacity: 0.95;
+}
+
+.alert-cta {
+  font-weight: 600;
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+/* ========== PREMIUM METRIC CARDS ========== */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-section);
+  margin-bottom: var(--space-section);
+}
+
+.stat-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-card);
+  padding: var(--space-card);
+  border: 1px solid var(--border-card);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: all 0.25s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-subtle);
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-icon.green {
+  background: var(--status-ahead);
+  color: white;
+}
+
+.stat-icon.purple {
+  background: var(--sidebar-bg);
+  color: white;
+}
+
+.stat-icon.orange {
+  background: var(--status-on-track);
+  color: var(--text-primary);
+}
+
+.stat-icon.blue {
+  background: var(--sidebar-bg);
+  color: white;
+}
+
+.stat-content {
+  flex: 1;
+}
+
+.stat-value {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.stat-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+/* Dashboard Grid */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-section);
+}
+
+.main-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-section);
+}
+
+/* Pulse Score Card - dark widget */
+.pulse-score-card {
+  background: var(--sidebar-bg);
+  border-radius: var(--radius-card);
+  padding: var(--space-card);
+  color: white;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-lg);
+}
+
+.pulse-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.pulse-header svg {
+  color: var(--status-on-track);
+}
+
+.pulse-header-text {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.65);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.pulse-score {
+  font-size: 72px;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 14px;
+}
+
+.pulse-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: var(--radius-md);
+  margin-bottom: 18px;
+  width: fit-content;
+}
+
+.pulse-status.status-ahead {
+  background: var(--status-ahead-bg);
+}
+
+.pulse-status.status-ahead .pulse-status-dot,
+.pulse-status.status-ahead .pulse-status-text {
+  color: var(--status-ahead);
+}
+
+.pulse-status.status-ahead .pulse-status-dot {
+  background: var(--status-ahead);
+}
+
+.pulse-status.status-on-track {
+  background: var(--status-on-track-bg);
+}
+
+.pulse-status.status-on-track .pulse-status-dot,
+.pulse-status.status-on-track .pulse-status-text {
+  color: var(--status-on-track);
+}
+
+.pulse-status.status-on-track .pulse-status-dot {
+  background: var(--status-on-track);
+}
+
+.pulse-status.status-at-risk {
+  background: var(--status-at-risk-bg);
+}
+
+.pulse-status.status-at-risk .pulse-status-dot,
+.pulse-status.status-at-risk .pulse-status-text {
+  color: var(--status-at-risk);
+}
+
+.pulse-status.status-at-risk .pulse-status-dot {
+  background: var(--status-at-risk);
+}
+
+.pulse-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.pulse-status-text {
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.pulse-status-desc {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 12px;
+  margin-left: 6px;
+}
+
+.velocity-card {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.velocity-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.velocity-label {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.55);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.velocity-value {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.velocity-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.velocity-status.status-ahead {
+  background: var(--status-ahead-bg);
+  color: var(--status-ahead);
+}
+
+.velocity-status.status-on-track {
+  background: var(--status-on-track-bg);
+  color: var(--status-on-track);
+}
+
+.velocity-status.status-at-risk {
+  background: var(--status-at-risk-bg);
+  color: var(--status-at-risk);
+}
+
+.progress-card {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-top: auto;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.progress-label {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.progress-value {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.progress-bar {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--status-ahead), var(--status-on-track));
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.progress-details {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Live Trip Card */
+.live-trip-card {
+  background: var(--sidebar-bg);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-lg);
+}
+
+.live-trip-header {
+  padding: 18px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.live-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--status-ahead-bg);
+  padding: 8px 14px;
+  border-radius: var(--radius-md);
+}
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--status-ahead);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.live-text {
+  color: var(--status-ahead);
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.time-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 8px 14px;
+  border-radius: var(--radius-md);
+  color: white;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.route-visual {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  position: relative;
+}
+
+.route-line {
+  width: 180px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  position: relative;
+}
+
+.route-progress {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background: var(--status-ahead);
+  border-radius: 2px;
+}
+
+.route-point {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.route-point.start {
+  background: var(--status-ahead);
+}
+
+.route-point.end {
+  background: var(--status-at-risk);
+}
+
+.car-icon {
+  position: absolute;
+  left: 55%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 44px;
+  height: 44px;
+  background: var(--bg-card);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-md);
+}
+
+.route-details {
+  background: var(--bg-card);
+  margin: 0 20px 20px;
+  border-radius: var(--radius-md);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+.route-stop {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.route-stop:first-child {
+  padding-bottom: 14px;
+  border-bottom: 1px dashed var(--border-card);
+}
+
+.route-stop:last-child {
+  padding-top: 14px;
+}
+
+.stop-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stop-icon.pickup {
+  background: var(--status-ahead-bg);
+  color: var(--status-ahead);
+}
+
+.stop-icon.dropoff {
+  background: var(--status-at-risk-bg);
+  color: var(--status-at-risk);
+}
+
+.stop-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.stop-address {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 15px;
+}
+
+.trip-stats {
+  display: flex;
+  justify-content: space-around;
+  padding: 16px 20px;
+  background: var(--bg-card);
+  margin: 0 20px 20px;
+  border-radius: var(--radius-md);
+  margin-top: auto;
+  box-shadow: var(--shadow-sm);
+}
+
+.trip-stat {
+  text-align: center;
+}
+
+.trip-stat-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.trip-stat-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.trip-stat-divider {
+  width: 1px;
+  background: var(--border-card);
+}
+
+/* Page Header */
+.page-header {
+  margin-bottom: var(--space-section);
+}
+
+.page-header-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.page-header-subtitle {
+  font-size: 15px;
+  color: var(--text-secondary);
+}
+
+/* Safety Cards */
+.safety-score-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-card);
+  padding: var(--space-card);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid var(--border-card);
+  box-shadow: var(--shadow-md);
+}
+
+.safety-score-card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.safety-score-circle {
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.safety-score-circle.good {
+  background: var(--status-ahead-bg);
+  border: 6px solid var(--status-ahead);
+}
+
+.safety-score-circle.warning {
+  background: var(--status-on-track-bg);
+  border: 6px solid var(--status-on-track);
+}
+
+.safety-score-circle.risk {
+  background: var(--status-at-risk-bg);
+  border: 6px solid var(--status-at-risk);
+}
+
+.safety-score-value {
+  font-size: 52px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.safety-score-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.safety-overall-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.safety-message {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.safety-tips-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-card);
+  padding: var(--space-card);
+  border: 1px solid var(--border-card);
+  box-shadow: var(--shadow-md);
+}
+
+.safety-tips-card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.safety-tips-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 18px;
+}
+
+.safety-tip {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: var(--bg-main);
+  border-radius: var(--radius-md);
+  margin-bottom: 12px;
+}
+
+.safety-tip:last-child {
+  margin-bottom: 0;
+}
+
+.tip-number {
+  width: 30px;
+  height: 30px;
+  background: var(--status-ahead);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.tip-text {
+  font-size: 15px;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+/* Event Cards */
+.event-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-section);
+  margin-top: var(--space-section);
+}
+
+.event-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-card);
+  padding: var(--space-card);
+  border: 1px solid var(--border-card);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+}
+
+.event-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.event-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+
+.event-card-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.event-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.event-icon.warning {
+  background: var(--status-ahead);
+  color: white;
+}
+
+.event-icon.danger {
+  background: var(--status-on-track);
+  color: var(--text-primary);
+}
+
+.event-value {
+  font-size: 44px;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.event-period {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-top: 8px;
+}
+
+/* Chart */
+.safety-chart-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-card);
+  padding: var(--space-card);
+  margin-top: var(--space-section);
+  border: 1px solid var(--border-card);
+  box-shadow: var(--shadow-md);
+}
+
+.safety-chart-card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.chart-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.chart-legend {
+  display: flex;
+  gap: 20px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 4px;
+}
+
+.legend-dot.good {
+  background: var(--status-ahead);
+}
+
+.legend-dot.warning {
+  background: var(--status-on-track);
+}
+
+.chart-bars {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  height: 150px;
+  padding-top: 20px;
+}
+
+.chart-bar-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.bar-container {
+  display: flex;
+  gap: 4px;
+  align-items: flex-end;
+  height: 100px;
+}
+
+.bar {
+  width: 18px;
+  border-radius: 6px 6px 0 0;
+  min-height: 4px;
+}
+
+.bar.good {
+  background: var(--status-ahead);
+}
+
+.bar.warning {
+  background: var(--status-on-track);
+}
+
+.bar-value {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.bar-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+/* Earnings */
+.earnings-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-card);
+  padding: var(--space-card);
+  border: 1px solid var(--border-card);
+  box-shadow: var(--shadow-md);
+}
+
+.earnings-card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.earnings-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-card);
+}
+
+.earnings-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.earnings-icon {
+  width: 36px;
+  height: 36px;
+  background: var(--status-on-track-bg);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--status-on-track);
+}
+
+.earnings-header-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.earnings-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.earnings-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.earnings-status-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.earnings-status-badge.status-ahead {
+  background: var(--status-ahead-bg);
+  color: var(--status-ahead);
+}
+
+.earnings-status-badge.status-on-track {
+  background: var(--status-on-track-bg);
+  color: #854D0E;
+}
+
+.earnings-status-badge.status-at-risk {
+  background: var(--status-at-risk-bg);
+  color: var(--status-at-risk);
+}
+
+.earnings-status-badge .status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.earnings-status-badge.status-ahead .status-dot {
+  background: var(--status-ahead);
+}
+
+.earnings-status-badge.status-on-track .status-dot {
+  background: var(--status-on-track);
+}
+
+.earnings-status-badge.status-at-risk .status-dot {
+  background: var(--status-at-risk);
+}
+
+.velocity-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.velocity-box {
+  background: var(--bg-main);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  border: 1px solid var(--border-card);
+}
+
+.velocity-box-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.velocity-box-value {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.velocity-box-value span {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.velocity-message {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--status-on-track-bg);
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  margin-bottom: 20px;
+}
+
+.velocity-message-icon {
+  color: var(--status-on-track);
+}
+
+.velocity-message-text {
+  color: #854D0E;
+  font-size: 14px;
+}
+
+.velocity-message-value {
+  margin-left: auto;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.velocity-message-value.positive {
+  color: var(--status-ahead);
+}
+
+.velocity-message-value.neutral {
+  color: var(--status-on-track);
+}
+
+.velocity-message-value.negative {
+  color: var(--status-at-risk);
+}
+
+.progress-section {
+  margin-bottom: 16px;
+}
+
+.progress-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.progress-row-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.progress-row-value {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 13px;
+}
+
+.progress-track {
+  height: 8px;
+  background: var(--border-card);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-track-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.progress-track-fill.blue {
+  background: linear-gradient(90deg, var(--sidebar-bg), var(--text-muted));
+}
+
+.progress-track-fill.orange {
+  background: linear-gradient(90deg, var(--status-on-track), #FDE047);
+}
+
+.progress-track-fill.green {
+  background: linear-gradient(90deg, var(--status-ahead), #4ADE80);
+}
+
+.current-earnings-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-card);
+  padding: var(--space-card);
+  text-align: center;
+  border: 1px solid var(--border-card);
+  border-top: 4px solid var(--status-on-track);
+  box-shadow: var(--shadow-md);
+  margin-top: var(--space-section);
+}
+
+.current-earnings-card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.current-earnings-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+
+.current-earnings-value {
+  font-size: 52px;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.earnings-trend-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--status-on-track-bg);
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  color: #854D0E;
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+
+.earnings-progress-section {
+  margin-bottom: 20px;
+}
+
+.earnings-progress-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.earnings-progress-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.earnings-progress-percent {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.earnings-progress-bar {
+  height: 10px;
+  background: var(--border-card);
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.earnings-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--status-on-track), var(--status-ahead));
+  border-radius: 5px;
+}
+
+.earnings-progress-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.earnings-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--status-on-track-bg);
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+}
+
+.earnings-summary-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.earnings-summary-icon {
+  color: inherit;
+}
+
+.earnings-summary-status {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.earnings-summary.status-ahead .earnings-summary-icon,
+.earnings-summary.status-ahead .earnings-summary-status {
+  color: var(--status-ahead);
+}
+
+.earnings-summary.status-on_track .earnings-summary-icon,
+.earnings-summary.status-on_track .earnings-summary-status {
+  color: #854D0E;
+}
+
+.earnings-summary.status-at-risk .earnings-summary-icon,
+.earnings-summary.status-at-risk .earnings-summary-status {
+  color: var(--status-at-risk);
+}
+
+.earnings-summary-projected {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.earnings-summary-value {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Trips */
+.trips-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-section);
+  margin-bottom: var(--space-section);
+}
+
+.trips-stat-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-card);
+  padding: var(--space-card);
+  border: 1px solid var(--border-card);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+}
+
+.trips-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.trips-stat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.trips-stat-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.trips-stat-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.trips-stat-icon.green {
+  background: var(--status-ahead);
+  color: white;
+}
+
+.trips-stat-icon.blue {
+  background: var(--sidebar-bg);
+  color: white;
+}
+
+.trips-stat-icon.dark {
+  background: var(--sidebar-bg);
+  color: white;
+}
+
+.trips-stat-value {
+  font-size: 36px;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.trips-stat-period {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 6px;
+}
+
+.trip-list-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-card);
+  padding: var(--space-card);
+  border: 1px solid var(--border-card);
+  box-shadow: var(--shadow-md);
+  margin-top: var(--space-section);
+}
+
+.trip-list-card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.trip-list-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+.trip-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border-card);
+}
+
+.trip-item:last-child {
+  border-bottom: none;
+}
+
+.trip-item-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.trip-item-icon.icon-green {
+  background: var(--status-ahead);
+  color: white;
+}
+
+.trip-item-icon.icon-blue {
+  background: var(--sidebar-bg);
+  color: white;
+}
+
+.trip-item-icon.icon-yellow {
+  background: var(--status-on-track);
+  color: var(--text-primary);
+}
+
+.trip-item-content {
+  flex: 1;
+}
+
+.trip-item-route {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.trip-item-location {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.trip-item-arrow {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.trip-item-details {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.trip-item-separator {
+  color: var(--border-card);
+}
+
+.trip-item-rating {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--status-on-track);
+}
+
+.trip-item-fare {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* ========== REFLECT & PLAN SECTION ========== */
+.reflect-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--space-section);
+  margin-top: var(--space-section);
+}
+
+.reflect-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-card);
+  padding: var(--space-card);
+  border: 1px solid var(--border-card);
+  box-shadow: var(--shadow-sm);
+}
+
+.reflect-card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+.reflect-card-title svg {
+  color: var(--status-on-track);
+}
+
+/* Goal progress timeline */
+.goal-timeline-chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 4px;
+  height: 80px;
+}
+
+.goal-timeline-point {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.goal-timeline-bar-wrap {
+  height: 50px;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.goal-timeline-bar {
+  width: 12px;
+  min-height: 4px;
+  background: linear-gradient(180deg, var(--status-on-track), var(--status-ahead));
+  border-radius: 4px 4px 0 0;
+  transition: height 0.3s ease;
+}
+
+.goal-timeline-time {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 6px;
+  text-align: center;
+}
+
+/* Stress moments */
+.stress-moments-list {
+  list-style: none;
+}
+
+.stress-moment {
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 8px;
+  border-left: 3px solid var(--status-at-risk);
+}
+
+.stress-moment:last-child {
+  margin-bottom: 0;
+}
+
+.stress-moment.severity-medium {
+  border-left-color: var(--status-on-track);
+}
+
+.stress-time {
+  display: block;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+.stress-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.reflect-empty {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+/* Action points */
+.action-points-list {
+  list-style: none;
+}
+
+.action-point {
+  padding: 12px;
+  background: var(--bg-main);
+  border-radius: var(--radius-sm);
+  margin-bottom: 8px;
+  border-left: 3px solid var(--status-ahead);
+}
+
+.action-point:last-child {
+  margin-bottom: 0;
+}
+
+.action-point.priority-high {
+  border-left-color: var(--status-at-risk);
+}
+
+.action-point.priority-medium {
+  border-left-color: var(--status-on-track);
+}
+
+.action-type {
+  display: inline-block;
+  font-size: 10px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.action-title {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.action-detail {
+  display: block;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+/* ========== DRIVER ASSISTANCE SECTION ========== */
+.assist-section {
+  margin-top: var(--space-section);
+  padding-top: var(--space-section);
+  border-top: 1px solid var(--border-card);
+}
+
+.assist-section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+.assist-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-section);
+}
+
+.assist-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-card);
+  padding: var(--space-card);
+  border: 1px solid var(--border-card);
+  box-shadow: var(--shadow-sm);
+}
+
+.assist-card-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.assist-card-subtitle {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+/* Driving Smoothness */
+.smoothness-meter {
+  text-align: center;
+}
+
+.smoothness-value {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--status-ahead);
+  line-height: 1.2;
+}
+
+.smoothness-bar-wrap {
+  height: 8px;
+  background: var(--border-card);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 12px 0 8px;
+}
+
+.smoothness-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--status-ahead), #4ADE80);
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.smoothness-detail {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* Trip Comparison */
+.comparison-selects {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.comparison-select {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-card);
+  font-size: 12px;
+  background: var(--bg-main);
+}
+
+.comparison-vs {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.comparison-table {
+  border-top: 1px solid var(--border-card);
+  padding-top: 10px;
+}
+
+.comparison-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  font-size: 13px;
+  padding: 6px 0;
+}
+
+.comparison-row span:first-child {
+  color: var(--text-secondary);
+}
+
+.comparison-row .win {
+  color: var(--status-ahead);
+  font-weight: 600;
+}
+
+/* Earnings Efficiency */
+.efficiency-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.efficiency-item {
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  text-align: center;
+}
+
+.efficiency-item.safe {
+  background: var(--status-ahead-bg);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.efficiency-item.risky {
+  background: var(--status-at-risk-bg);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.efficiency-label {
+  display: block;
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.efficiency-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.efficiency-value.safe { color: var(--status-ahead); }
+.efficiency-value.risky { color: var(--status-at-risk); }
+
+.efficiency-count {
+  display: block;
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+/* Event Density */
+.density-chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 4px;
+  height: 80px;
+}
+
+.density-bar-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.density-bar {
+  width: 100%;
+  max-width: 24px;
+  min-height: 4px;
+  background: var(--status-on-track);
+  border-radius: 4px 4px 0 0;
+  transition: height 0.3s ease;
+}
+
+.density-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 6px;
+}
+
+.density-count {
+  font-size: 9px;
+  color: var(--text-secondary);
+}
+
+/* Behavior Trend */
+.trend-card {
+  grid-column: span 2;
+}
+
+.trend-chart {
+  height: 60px;
+  margin-bottom: 8px;
+}
+
+.trend-line-svg {
+  width: 100%;
+  height: 100%;
+  color: var(--status-ahead);
+}
+
+.trend-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.trend-label {
+  flex: 1;
+  text-align: center;
+}
+
+/* Daily Summary */
+.summary-report {
+  padding-top: 4px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  font-size: 13px;
+  border-bottom: 1px solid var(--border-card);
+}
+
+.summary-row:last-of-type {
+  border-bottom: none;
+}
+
+.summary-value {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.summary-grade-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-card);
+}
+
+.summary-grade {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.summary-grade.grade-a {
+  background: var(--status-ahead-bg);
+  color: var(--status-ahead);
+}
+
+.summary-grade.grade-b {
+  background: var(--status-on-track-bg);
+  color: #854D0E;
+}
+
+.summary-grade.grade-c {
+  background: var(--status-at-risk-bg);
+  color: var(--status-at-risk);
+}
+
+.summary-note {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* ========== EARNINGS PAGE - NO SCROLL, MOBILE FIRST ========== */
+.earnings-main .content-area {
+  padding: 0 var(--space-page) var(--space-page);
+}
+
+.earnings-content.earnings-no-scroll {
+  height: calc(100vh - 90px);
+  max-height: 600px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.earnings-compact-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+  min-height: 0;
+}
+
+.earnings-hero {
+  text-align: center;
+  padding: 16px;
+  background: var(--bg-card);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--border-card);
+  box-shadow: var(--shadow-sm);
+}
+
+.earnings-hero-amount {
+  font-size: 48px;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.1;
+}
+
+.earnings-hero-label {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.earnings-hero-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 6px 12px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.earnings-hero-status.status-ahead {
+  background: var(--status-ahead-bg);
+  color: var(--status-ahead);
+}
+
+.earnings-hero-status.status-on-track,
+.earnings-hero-status.status-on_track {
+  background: var(--status-on-track-bg);
+  color: #854D0E;
+}
+
+.earnings-hero-status.status-at-risk {
+  background: var(--status-at-risk-bg);
+  color: var(--status-at-risk);
+}
+
+.earnings-velocity-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.earnings-velocity-compact {
+  background: var(--bg-card);
+  padding: 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-card);
+  text-align: center;
+}
+
+.earnings-vel-label {
+  display: block;
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.earnings-vel-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.earnings-velocity-delta {
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.earnings-velocity-delta.positive {
+  background: var(--status-ahead-bg);
+  color: var(--status-ahead);
+}
+
+.earnings-velocity-delta.negative {
+  background: var(--status-at-risk-bg);
+  color: var(--status-at-risk);
+}
+
+.earnings-progress-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.earnings-progress-item {
+  background: var(--bg-card);
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-card);
+}
+
+.earnings-prog-label {
+  display: block;
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.earnings-prog-bar {
+  height: 6px;
+  background: var(--border-card);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.earnings-prog-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--sidebar-bg), var(--text-muted));
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+.earnings-prog-fill.orange {
+  background: linear-gradient(90deg, var(--status-on-track), #FDE047);
+}
+
+.earnings-breakdown-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.earnings-breakdown-chip {
+  flex: 1;
+  min-width: 80px;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  text-align: center;
+  border: 1px solid var(--border-card);
+}
+
+.earnings-breakdown-chip.icon-green {
+  background: var(--status-ahead-bg);
+  border-color: rgba(34, 197, 94, 0.3);
+}
+
+.earnings-breakdown-chip.icon-blue {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.earnings-breakdown-chip.icon-yellow {
+  background: var(--status-on-track-bg);
+  border-color: rgba(250, 204, 21, 0.3);
+}
+
+.earnings-chip-label {
+  display: block;
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.earnings-chip-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.earnings-message-row {
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 8px;
+}
+
+/* ========== MOBILE FIRST - PHONE OPTIMIZED ========== */
+@media (max-width: 768px) {
+  .sidebar {
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    padding: 0;
+    border-right: none;
+    border-top: 1px solid var(--sidebar-border);
+  }
+
+  .sidebar-header {
+    display: none;
+  }
+
+  .sidebar-nav {
+    flex: 1;
+    flex-direction: row;
+    padding: 8px;
+    justify-content: space-around;
+    gap: 0;
+  }
+
+  .nav-item {
+    flex-direction: column;
+    padding: 8px 12px;
+    margin: 0;
+    font-size: 11px;
+  }
+
+  .nav-item.active {
+    margin-left: 0;
+    border-left: none;
+    border-bottom: 3px solid var(--sidebar-text);
+  }
+
+  .nav-item span {
+    display: block;
+  }
+
+  .sidebar-footer {
+    display: none;
+  }
+
+  .main-content {
+    margin-left: 0;
+    margin-bottom: 70px;
+    padding-bottom: 16px;
+  }
+
+  .content-area {
+    padding: 0 16px 16px;
+  }
+
+  .page-header {
+    margin-bottom: 16px;
+  }
+
+  .page-header-title {
+    font-size: 22px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .stat-value {
+    font-size: 22px;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .assist-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .assist-card.trend-card {
+    grid-column: span 1;
+  }
+
+  .comparison-selects {
+    flex-direction: column;
+  }
+
+  .reflect-section {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-top: 16px;
+  }
+
+  .earnings-content.earnings-no-scroll {
+    height: calc(100vh - 140px);
+    max-height: none;
+  }
+
+  .earnings-hero-amount {
+    font-size: 40px;
+  }
+
+  .earnings-velocity-row {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+  }
+
+  .earnings-velocity-delta {
+    grid-column: 1 / -1;
+    text-align: center;
+  }
+
+  .earnings-breakdown-row {
+    flex-direction: row;
+  }
+
+  .earnings-breakdown-chip {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .top-header {
+    padding: 16px;
+  }
+
+  .welcome-title {
+    font-size: 24px;
+  }
+
+  .pulse-score {
+    font-size: 56px;
+  }
+}
+
+@media (max-width: 480px) {
+  .earnings-hero-amount {
+    font-size: 36px;
+  }
+
+  .earnings-vel-value {
+    font-size: 16px;
+  }
+
+  .goal-timeline-time {
+    font-size: 9px;
+  }
+}

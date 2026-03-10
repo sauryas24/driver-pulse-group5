@@ -1,0 +1,7 @@
+trip_id,motion_events,audio_events,motion_penalty,audio_penalty,total_penalty,driver_pulse_score,status
+driver_001_trip_001,1,1,3,2,5,95,ahead
+trip_001,3,2,9,4,13,87,ahead
+trip_002,2,1,6,2,8,92,ahead
+trip_003,2,1,6,2,8,92,ahead
+trip_004,1,1,3,2,5,95,ahead
+trip_005,1,0,3,0,3,97,ahead

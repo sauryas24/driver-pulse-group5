@@ -1,0 +1,17 @@
+trip_id,timestamp,event_type,severity,reason,combined_event
+trip_001,2025-03-07 10:05:23,motion,medium,sudden speed drop,false
+trip_001,2025-03-07 10:06:15,audio,medium,very_loud sustained,true
+trip_001,2025-03-07 10:12:45,motion,low,sudden acceleration,false
+trip_001,2025-03-07 10:12:50,audio,low,argument sustained,true
+trip_001,2025-03-07 10:18:02,motion,medium,lateral accel spike,false
+trip_002,2025-03-07 11:02:15,motion,high,sudden speed drop,false
+trip_002,2025-03-07 11:03:00,audio,high,argument sustained,true
+trip_002,2025-03-07 11:15:30,motion,medium,combined maneuver,false
+trip_003,2025-03-07 12:05:00,motion,medium,sudden speed drop,false
+trip_003,2025-03-07 12:10:22,motion,low,lateral accel spike,false
+trip_003,2025-03-07 12:11:00,audio,low,very_loud sustained,false
+trip_004,2025-03-07 13:20:10,motion,high,sudden speed drop,false
+trip_004,2025-03-07 13:21:00,audio,medium,very_loud sustained,true
+trip_005,2025-03-07 14:05:33,motion,medium,sudden acceleration,false
+driver_001_trip_001,2025-03-07 09:30:00,motion,medium,sudden speed drop,false
+driver_001_trip_001,2025-03-07 09:31:00,audio,medium,very_loud sustained,true

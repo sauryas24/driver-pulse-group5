@@ -1,0 +1,11 @@
+trip_id,timestamp,event_type,severity,acc_x,acc_y,speed_before,speed_after
+trip_001,2025-03-07 10:05:23,hard_brake,medium,-3.5,0.2,45,12
+trip_001,2025-03-07 10:12:45,sudden_acceleration,low,2.8,-0.1,5,28
+trip_001,2025-03-07 10:18:02,sharp_turn,medium,0.5,2.9,30,32
+trip_002,2025-03-07 11:02:15,hard_brake,high,-4.2,0.3,55,8
+trip_002,2025-03-07 11:15:30,sudden_maneuver,medium,1.2,2.1,25,22
+trip_003,2025-03-07 12:05:00,hard_brake,medium,-3.1,0.1,38,15
+trip_003,2025-03-07 12:10:22,sharp_turn,low,0.3,2.2,20,18
+trip_004,2025-03-07 13:20:10,hard_brake,high,-4.0,0.4,50,10
+trip_005,2025-03-07 14:05:33,sudden_acceleration,medium,3.0,0.0,0,35
+driver_001_trip_001,2025-03-07 09:30:00,hard_brake,medium,-3.3,0.2,40,14
